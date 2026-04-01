@@ -8,6 +8,7 @@ use App\Groups\ModelGroups;
 use App\Repository\ModelRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ModelRepository::class)]
 #[ApiResource(
@@ -25,6 +26,7 @@ class Model
 
     #[ORM\Column(length: 255)]
     #[Groups(ModelGroups::NAME)]
+    #[Assert\NotBlank(message: 'Model name cannot be blank !')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]

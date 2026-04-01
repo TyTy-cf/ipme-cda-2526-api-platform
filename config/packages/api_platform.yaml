@@ -1,7 +1,14 @@
 api_platform:
     title: Centrale-Ish
-    version: 0.0.1
+    version: 0.3.0
     defaults:
+        pagination_enabled: true
+        pagination_items_per_page: 10
+        pagination_maximum_items_per_page: 50
+        pagination_client_items_per_page: true
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+    # disable other UI that arn't Scalar
+    enable_swagger_ui: false
+    enable_re_doc: false

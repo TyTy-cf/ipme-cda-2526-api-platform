@@ -1,0 +1,7 @@
+
+user:
+    email:
+        not_blank: "Email cannot be blank !"
+        email: "Is not a valid email address !"
+    password:
+        not_blank: "Password cannot be blank !"

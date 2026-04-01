@@ -9,6 +9,6 @@ interface ModelGroups
     const SLUG = "model:slug";
     const BRAND = "model:brand";
     const COLLECTION = [self::NAME, self::SLUG];
-    const ITEM = [self::ID, self::NAME, self::SLUG, self::BRAND, BrandGroups::COLLECTION];
+    const ITEM = [self::ID, self::NAME, self::SLUG, self::BRAND, ...BrandGroups::COLLECTION];
 
 }

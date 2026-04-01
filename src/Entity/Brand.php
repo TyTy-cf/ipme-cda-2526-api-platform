@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -12,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 #[ApiResource(
@@ -31,10 +35,16 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Post(
             normalizationContext: ['groups' => BrandGroups::ITEM],
-            denormalizationContext: ['groups' => [BrandGroups::POST]],
+            denormalizationContext: ['groups' => BrandGroups::POST],
         )
-    ]
+    ],
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'name' => 'partial',
+])]
+#[ApiFilter(OrderFilter::class, properties: [
+    'name',
+])]
 class Brand
 {
     #[ORM\Id]
@@ -45,6 +55,7 @@ class Brand
 
     #[ORM\Column(length: 255)]
     #[Groups(BrandGroups::NAME)]
+    #[Assert\NotBlank(message: 'Brand name cannot be blank !')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -73,7 +84,7 @@ class Brand
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 

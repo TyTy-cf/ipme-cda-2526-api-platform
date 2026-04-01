@@ -1,0 +1,7 @@
+
+user:
+    email:
+        not_blank: "L'email ne peut pas être vide !"
+        email: "L'email n'est pas formattée correctement !"
+    password:
+        not_blank: "Le mot de passe ne peut pas être vide !"

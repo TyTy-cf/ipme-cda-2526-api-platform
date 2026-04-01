@@ -1,0 +1,7 @@
+
+entities:
+    user:
+        properties:
+            email: "Email"
+            password: "Mot de passe"
+
