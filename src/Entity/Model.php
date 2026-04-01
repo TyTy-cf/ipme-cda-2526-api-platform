@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\Groups\BrandGroups;
 use App\Groups\ModelGroups;
 use App\Repository\ModelRepository;
 use Doctrine\ORM\Mapping as ORM;

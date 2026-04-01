@@ -2,10 +2,6 @@
 
 namespace App\Groups;
 
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-
 interface BrandGroups
 {
     const ID = "brand:id";
