@@ -5,18 +5,35 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Groups\BrandGroups;
+use App\Groups\BrandItem;
 use App\Repository\BrandRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(uriTemplate: '/brands'),
+        new GetCollection(
+            uriTemplate: '/brands',
+            normalizationContext: ['groups' => BrandGroups::COLLECTION],
+        ),
+        new Get(
+            normalizationContext: ['groups' => BrandGroups::ITEM],
+        ),
         new Get(
             uriTemplate: '/brands/slug/{slug}',
             uriVariables: ['slug'],
             routeName: 'brands_show_by_slug',
+            normalizationContext: ['groups' => BrandGroups::ITEM],
         ),
+        new Post(
+            normalizationContext: ['groups' => BrandGroups::ITEM],
+            denormalizationContext: ['groups' => [BrandGroups::POST]],
+        )
     ]
 )]
 class Brand
@@ -24,13 +41,28 @@ class Brand
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(BrandGroups::ID)]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(BrandGroups::NAME)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(BrandGroups::SLUG)]
     private ?string $slug = null;
+
+    /**
+     * @var Collection<int, Model>
+     */
+    #[ORM\OneToMany(targetEntity: Model::class, mappedBy: 'brand')]
+    #[Groups(BrandGroups::MODELS)]
+    private Collection $models;
+
+    public function __construct()
+    {
+        $this->models = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,5 +91,41 @@ class Brand
         $this->slug = $slug;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Model>
+     */
+    public function getModels(): Collection
+    {
+        return $this->models;
+    }
+
+    public function addModel(Model $model): static
+    {
+        if (!$this->models->contains($model)) {
+            $this->models->add($model);
+            $model->setBrand($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModel(Model $model): static
+    {
+        if ($this->models->removeElement($model)) {
+            // set the owning side to null (unless already changed)
+            if ($model->getBrand() === $this) {
+                $model->setBrand(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[Groups(BrandGroups::COUNT_MODELS)]
+    public function getCountModels(): int
+    {
+        return count($this->models);
     }
 }
