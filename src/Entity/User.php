@@ -5,16 +5,20 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Groups\UserGroups;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -24,7 +28,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             normalizationContext: ['groups' => UserGroups::ITEM],
             denormalizationContext: ['groups' => UserGroups::POST],
-        )
+        ),
+        new Get(),
     ]
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
@@ -33,10 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[Groups(UserGroups::UUID)]
-    private ?string $id = null;
+    private ?Uuid $id = null;
 
     #[ORM\Column(length: 180)]
     #[Groups(UserGroups::EMAIL)]
@@ -59,10 +64,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    private ?\DateTime $createdAt = null;
+    private ?DateTime $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTime $birthAt = null;
+    private ?DateTime $birthAt = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(UserGroups::FIRSTNAME)]
@@ -99,6 +104,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Favorite::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $favorites;
 
+    #[ORM\Column(length: 255)]
+    private ?string $activationCode = null;
+
+    #[ORM\Column]
+    private ?DateTime $activationCodeSentAt = null;
+
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
@@ -106,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->favorites = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -187,24 +198,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // @deprecated, to be removed when upgrading to Symfony 8
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getBirthAt(): ?\DateTime
+    public function getBirthAt(): ?DateTime
     {
         return $this->birthAt;
     }
 
-    public function setBirthAt(?\DateTime $birthAt): static
+    public function setBirthAt(?DateTime $birthAt): static
     {
         $this->birthAt = $birthAt;
 
@@ -360,4 +371,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getActivationCode(): ?string
+    {
+        return $this->activationCode;
+    }
+
+    public function setActivationCode(?string $activationCode): void
+    {
+        $this->activationCode = $activationCode;
+    }
+
+    public function getActivationCodeSentAt(): ?DateTime
+    {
+        return $this->activationCodeSentAt;
+    }
+
+    public function setActivationCodeSentAt(?DateTime $activationCodeSentAt): void
+    {
+        $this->activationCodeSentAt = $activationCodeSentAt;
+    }
+
 }
