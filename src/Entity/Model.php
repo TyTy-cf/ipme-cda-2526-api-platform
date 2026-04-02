@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Groups\ModelGroups;
 use App\Repository\ModelRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,6 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ModelRepository::class)]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            order: ['brand.name' => 'ASC', 'name' => 'ASC'],
+            normalizationContext: ['groups' => ModelGroups::COLLECTION],
+        ),
         new Get(normalizationContext: ['groups' => ModelGroups::ITEM]),
     ]
 )]

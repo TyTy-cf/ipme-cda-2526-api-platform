@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(
             uriTemplate: '/brands',
+            order: ['name' => 'ASC'],
             normalizationContext: ['groups' => BrandGroups::COLLECTION],
         ),
         new Get(
