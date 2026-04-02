@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Groups\ModelGroups;
 use App\Repository\ModelRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,6 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => ModelGroups::COLLECTION],
         ),
         new Get(normalizationContext: ['groups' => ModelGroups::ITEM]),
+        new Post(
+            normalizationContext: ['groups' => ModelGroups::ITEM],
+            denormalizationContext: ['groups' => ModelGroups::POST],
+        )
     ]
 )]
 class Model
