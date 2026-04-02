@@ -6,8 +6,10 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Groups\UserGroups;
+use App\Processor\UserPasswordHasher;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,6 +30,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             normalizationContext: ['groups' => UserGroups::ITEM],
             denormalizationContext: ['groups' => UserGroups::POST],
+            processor: UserPasswordHasher::class,
+        ),
+        new Patch(
+            normalizationContext: ['groups' => UserGroups::ITEM],
+            denormalizationContext: ['groups' => UserGroups::PATCH],
+            processor: UserPasswordHasher::class,
         ),
         new Get(),
     ]
@@ -60,8 +68,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(UserGroups::PASSWORD)]
-    #[Assert\NotBlank(message: 'user.password.not_blank')]
     private ?string $password = null;
+
+    #[Groups(UserGroups::PLAIN_PASSWORD)]
+    #[Assert\NotBlank(message: 'user.password.not_blank')]
+    private ?string $plainPassword = null;
 
     #[ORM\Column]
     private ?DateTime $createdAt = null;
@@ -84,6 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $photo = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(UserGroups::SIRET)]
     private ?string $siret = null;
 
     /**
@@ -390,6 +402,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActivationCodeSentAt(?DateTime $activationCodeSentAt): void
     {
         $this->activationCodeSentAt = $activationCodeSentAt;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
     }
 
 }

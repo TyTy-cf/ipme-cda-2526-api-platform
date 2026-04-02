@@ -8,9 +8,11 @@ interface UserGroups
     const FIRSTNAME = "user:firstname";
     const LASTNAME = "user:lastname";
     const EMAIL = "user:email";
+    const SIRET = "user:siret";
     const PASSWORD = "user:password";
-    const COLLECTION = [self::UUID, self::EMAIL];
+    const PLAIN_PASSWORD = "user:plainPassword";
     const ITEM = [self::UUID, self::FIRSTNAME, self::LASTNAME, self::EMAIL];
-    const POST = [self::EMAIL, self::PASSWORD];
+    const POST = [self::EMAIL, self::FIRSTNAME, self::LASTNAME, self::SIRET, self::PLAIN_PASSWORD];
+    const PATCH = [...self::POST];
 
 }
