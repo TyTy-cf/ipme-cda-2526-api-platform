@@ -10,5 +10,10 @@ api_platform:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
     # disable other UI that arn't Scalar
-    enable_swagger_ui: false
-    enable_re_doc: false
+#    enable_swagger_ui: false
+#    enable_re_doc: false
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
