@@ -11,10 +11,21 @@
 ### 2. Modifier l'entité `Fuel`
 
 
-- Opérations autorisées : `GET:COLLECTION`, `GET:ITEM`, `POST`, `PATCH`, `DELETE`
-- Modifier le `POST` & le `PATCH` de l'entité `Fuel`, pour ne pas prendre en compte le `slug`
+- Opérations autorisées : 
+
+| HTTP           | Accès      |
+| -------------- |------------|
+| GET:COLLECTION | PUBLIC     |
+| GET:ITEM       | PUBLIC     |
+| POST           | ROLE_ADMIN |
+| PATCH          | ROLE_ADMIN |
+| DELETE         | ROLE_ADMIN |
+
+- Modifier le `POST` & le `PATCH` de l'entité `Fuel`, pour avoir seulement les propriétés suivantes :
+  - `name`
+  - `logo`
 - Ajouter une contrainte `NotBlank` sur les proprités `name` et `logo`
-- Faire en sorte de ne pas récupérer les `listing` liés à l'entité `Fuel` et ce, même pour le GET:ITEM !
+- Faire en sorte de ne pas récupérer les `listing` liés à l'entité `Fuel` et ce, même pour le `GET:ITEM` !
 - Autoriser les filtres suivants sur l'entité :
   - `SearchFilter` sur `name`  (en `partial`)
   - `OrderFilter` sur `name`
@@ -23,7 +34,14 @@
 ### 3. Modifier l'entité `User`
 
 
-- Opérations autorisées : `GET:ITEM`, `POST`, `PATCH` 
+- Opérations autorisées :
+
+| HTTP           | Accès                     |
+| -------------- |---------------------------|
+| GET:ITEM       | PUBLIC                    |
+| POST           | PUBLIC                    |
+| PATCH          | ROLE_USER & USER CONNECTE |
+
 - Modifier le `POST` & le `PATCH` de l'entité `User`, pour avoir seulement les propriétés suivantes :
     - `birthAt`
     - `email`
@@ -45,7 +63,14 @@
 ### 4. Modifier l'entité `Address`
 
 
-- Opérations autorisées : `POST`, `PATCH`
+- Opérations autorisées :
+
+| HTTP   | Accès                     |
+|--------|---------------------------|
+| POST   | ROLE_USER                 |
+| PATCH  | ROLE_USER & USER CONNECTE |
+| DELETE | ROLE_USER & USER CONNECTE |
+
 - Modifier le `POST` & le `PATCH` de l'entité `Address`, pour avoir seulement les propriétés suivantes :
     - `city`
     - `latitude`
