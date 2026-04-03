@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -46,6 +45,7 @@ class Model
 
     #[ORM\ManyToOne(inversedBy: 'models')]
     #[Groups(ModelGroups::BRAND)]
+    #[Assert\NotBlank(message: 'Brand cannot be blank !')]
     private ?Brand $brand = null;
 
     public function getId(): ?int
