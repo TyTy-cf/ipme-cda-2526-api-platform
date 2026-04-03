@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Entity\Interfaces\CreatedAtInterface;
 use App\Groups\UserGroups;
 use App\Processor\UserPasswordHasher;
 use App\Repository\UserRepository;
@@ -41,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, CreatedAtInterface
 {
 
     #[ORM\Id]

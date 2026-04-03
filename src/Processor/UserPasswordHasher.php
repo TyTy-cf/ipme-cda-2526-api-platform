@@ -21,7 +21,6 @@ final readonly class UserPasswordHasher implements ProcessorInterface
     {
         /** @var User $data */
         if ($data->getCreatedAt() === null) {
-            $data->setCreatedAt(new \DateTime());
             $data->setActivationCode(uniqid());
             $data->setActivationCodeSentAt(new \DateTime());
             $data->setRoles(['ROLE_USER']);
